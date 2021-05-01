@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from datetime import datetime
 
-from . import models, schemas
+import models, schemas
 
 def create_user(db: Session, user: schemas.UserForm):
     hased_password = user.password + '_hashed'
@@ -13,7 +13,7 @@ def create_user(db: Session, user: schemas.UserForm):
 
 def user_login(db: Session, user: schemas.UserForm):
     hashed_password = user.password + '_hashed'
-    return db.query(models.User).filter(models.User.username == user.username and models.User.password == hashed_password).first()
+    return db.query(models.User).filter(models.User.username == user.username, models.User.password == hashed_password).first()
 
 def get_user_by_id(db: Session, user_id: int):
     return db.query(models.User).filter(models.User.uid == user_id).first()
@@ -29,8 +29,11 @@ def create_topic(db: Session, topic: schemas.TopicForm):
     db.refresh(db_topic)
     return db_topic
 
-def get_topic(db: Session, user_id: int, topic_id: int):
-    return db.query(models.Topic).filter(models.Topic.uid == user_id and models.Topic.lid == topic_id).first()
+def get_topic_by_id(db: Session, topic_id: int):
+    return db.query(models.Topic).filter(models.Topic.lid == topic_id).first()
+
+def get_topic_by_name(db: Session, user_id: int, topic_name: int):
+    return db.query(models.Topic).filter(models.Topic.uid == user_id, models.Topic.name == topic_name).first()
 
 def get_topics_by_user(db: Session, user_id: int, skip: int = 0, limit: int = 100):
     return db.query(models.Topic).offset(skip).limit(limit).all()
@@ -47,4 +50,4 @@ def get_note(db: Session, note_id: int):
     return db.query(models.Note).filter(models.Note.rid == note_id).first()
 
 def get_note_by_user_topic(db: Session, user_id: int, topic_id: int, skip: int = 0, limit: int = 100):
-    return db.query(models.Note).filter(models.Note.uid == user_id and models.Note.lid == topic_id).offset(skip).limit(limit).all()
+    return db.query(models.Note).filter(models.Note.uid == user_id, models.Note.lid == topic_id).offset(skip).limit(limit).all()

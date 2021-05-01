@@ -17,10 +17,10 @@ class User(UserBase):
 class TopicForm(BaseModel):
     name: str
     rank: int
+    uid: int
 
 class Topic(TopicForm):
     lid: int
-    uid: int
     created_time: datetime
 
     class Config:

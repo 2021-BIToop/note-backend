@@ -1,7 +1,7 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Date, LargeBinary
 from sqlalchemy.orm import relationship
 
-from .database import Base
+from database import Base
 
 
 class User(Base):
@@ -18,14 +18,14 @@ class Topic(Base):
     __tablename__ = "topics"
 
     lid = Column(Integer, primary_key=True, index=True)
-    name = Column(String, unique=True, index=True)
+    name = Column(String, index=True)
     rank = Column(Integer)
     created_time = Column(Date)
     
     uid = Column(Integer, ForeignKey('users.uid'))
     topic_owner = relationship('User', back_populates='topics')
 
-    notes = relationship('Note', back_polulates='kind')
+    notes = relationship('Note', back_populates='kind')
 
 class Note(Base):
     __tablename__ = "notes"
