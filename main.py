@@ -46,14 +46,14 @@ def add_topic(topic: schemas.TopicForm, db: Session = Depends(get_database)):
 
 @app.get('/topic/{topic_id}', response_model=schemas.Topic)
 def get_topic_by_id(topic_id: int, db: Session = Depends(get_database)):
-    db_topic = db.get_topic_by_id(db=db, topic_id=topic_id)
+    db_topic = crud.get_topic_by_id(db=db, topic_id=topic_id)
     if db_topic is None:
         raise HTTPException(status_code=404, detail="Topic not found")
     return db_topic
 
 @app.get('/topics/{user_id}', response_model=List[schemas.Topic])
 def get_topics_by_user(user_id: str, offset: int = 0, limit: int = 100, db: Session = Depends(get_database)):
-    db_topics = curd.get_topics_by_user(db=db, user_id=user_id, skip=offset, limit=limit)
+    db_topics = crud.get_topics_by_user(db=db, user_id=user_id, skip=offset, limit=limit)
     if db_topics is None:
         raise HTTPException(status_code=404, detail="Topic(s) not found")
     return db_topics

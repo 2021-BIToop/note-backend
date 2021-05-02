@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Date, LargeBinary
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime, LargeBinary
 from sqlalchemy.orm import relationship
 
 from database import Base
@@ -20,7 +20,7 @@ class Topic(Base):
     lid = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
     rank = Column(Integer)
-    created_time = Column(Date)
+    created_time = Column(DateTime)
     
     uid = Column(Integer, ForeignKey('users.uid'))
     topic_owner = relationship('User', back_populates='topics')
@@ -33,7 +33,7 @@ class Note(Base):
     rid = Column(Integer, primary_key=True, index=True)
     content = Column(LargeBinary)
     priority = Column(Integer)
-    modified_time = Column(Date)
+    modified_time = Column(DateTime)
     
     uid = Column(Integer, ForeignKey('users.uid'))
     note_owner = relationship('User', back_populates='notes')
