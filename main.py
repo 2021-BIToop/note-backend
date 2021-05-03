@@ -51,9 +51,33 @@ def get_topic_by_id(topic_id: int, db: Session = Depends(get_database)):
         raise HTTPException(status_code=404, detail="Topic not found")
     return db_topic
 
-@app.get('/topics/{user_id}', response_model=List[schemas.Topic])
-def get_topics_by_user(user_id: str, offset: int = 0, limit: int = 100, db: Session = Depends(get_database)):
+@app.get('/topics', response_model=List[schemas.Topic])
+def get_topics_by_user(user_id: int, offset: int = 0, limit: int = 100, db: Session = Depends(get_database)):
     db_topics = crud.get_topics_by_user(db=db, user_id=user_id, skip=offset, limit=limit)
     if db_topics is None:
         raise HTTPException(status_code=404, detail="Topic(s) not found")
     return db_topics
+
+@app.post('/add_note', response_model=schemas.Note)
+def add_note(note: schemas.NoteForm, db: Session = Depends(get_database)):
+    db_user = crud.get_user_by_id(db=db, user_id=note.uid)
+    if db_user is None:
+        raise HTTPException(status_code=404, detail="Invalid user id")
+    db_topic = crud.get_topic_by_id_user(db=db, topic_id=note.lid, user_id=note.uid)
+    if db_topic is None:
+        raise HTTPException(status_code=404, detail="Invalid topic id") 
+    return crud.create_note(db=db, note=note)
+
+@app.get('/note/{note_id}', response_model=schemas.Note)
+def get_note_by_id(note_id: int, db: Session = Depends(get_database)):
+    db_note = crud.get_note_by_id(db=db, note_id=note_id)
+    if db_note is None:
+        raise HTTPException(status_code=404, detail="Note not found")
+    return db_note
+
+@app.get('/notes', response_model=List[schemas.Note])
+def get_notes_by_user(user_id: int, topic_id: int, offset: int = 0, limit: int = 100, db: Session = Depends(get_database)):
+    db_notes = crud.get_note_by_user_topic(db=db, user_id=user_id, topic_id=topic_id, skip=offset, limit=limit)
+    if db_notes is None:
+        raise HTTPException(status_code=404, detail="Note(s) not found")
+    return db_notes

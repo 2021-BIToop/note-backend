@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime, LargeBinary
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime
 from sqlalchemy.orm import relationship
 
 from database import Base
@@ -31,7 +31,7 @@ class Note(Base):
     __tablename__ = "notes"
 
     rid = Column(Integer, primary_key=True, index=True)
-    content = Column(LargeBinary)
+    content = Column(String)
     priority = Column(Integer)
     modified_time = Column(DateTime)
     

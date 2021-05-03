@@ -35,6 +35,9 @@ def get_topic_by_id(db: Session, topic_id: int):
 def get_topic_by_name(db: Session, user_id: int, topic_name: int):
     return db.query(models.Topic).filter(models.Topic.uid == user_id, models.Topic.name == topic_name).first()
 
+def get_topic_by_id_user(db: Session, topic_id: int, user_id: int):
+    return db.query(models.Topic).filter(models.Topic.lid == topic_id, models.Topic.uid == user_id).first()
+
 def get_topics_by_user(db: Session, user_id: int, skip: int = 0, limit: int = 100):
     return db.query(models.Topic).offset(skip).limit(limit).all()
 
@@ -46,7 +49,7 @@ def create_note(db: Session, note: schemas.NoteForm):
     db.refresh(db_note)
     return db_note
 
-def get_note(db: Session, note_id: int):
+def get_note_by_id(db: Session, note_id: int):
     return db.query(models.Note).filter(models.Note.rid == note_id).first()
 
 def get_note_by_user_topic(db: Session, user_id: int, topic_id: int, skip: int = 0, limit: int = 100):

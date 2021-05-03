@@ -30,7 +30,7 @@ class NoteForm(BaseModel):
     content: str
     priority: int
     uid: int
-    rid: int
+    lid: int
 
 class Note(NoteForm):
     rid: int
