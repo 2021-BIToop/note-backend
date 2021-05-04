@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from datetime import datetime
 
-import models, schemas
+from . import models, schemas
 
 def create_user(db: Session, user: schemas.UserForm):
     hased_password = user.password + '_hashed'
