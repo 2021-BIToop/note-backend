@@ -60,6 +60,16 @@ def update_topic(topic: schemas.TopicForm, db: Session = Depends(get_database)):
         raise HTTPException(status_code=404, detail="Topic not found")
     return crud.update_topic(db=db, topic=topic)
 
+@app.post('/remove_topic', response_model=List[schemas.Topic])
+def remove_topic_by_user(user_id: int, topic_id: int, db: Session = Depends(get_database)):
+    db_topic = crud.get_topic_by_id_user(db=db, topic_id=topic_id, user_id=user_id)
+    if db_topic is None:
+        raise HTTPException(status_code=404, detail="Topic not found")
+    db_topic_notes = crud.get_note_by_user_topic(db=db, user_id=user_id, topic_id=topic_id)
+    if len(db_topic_notes) > 0:
+        raise HTTPException(status_code=400, detail="The note under this topic is not empty")
+    return crud.remove_topic_by_user(db=db, user_id=user_id, topic_id=topic_id)
+
 @app.get('/topic', response_model=schemas.Topic)
 def get_topic_by_id(topic_id: int, db: Session = Depends(get_database)):
     db_topic = crud.get_topic_by_id(db=db, topic_id=topic_id)
@@ -90,6 +100,13 @@ def update_note(note: schemas.NoteForm, db: Session = Depends(get_database)):
     if db_note is None:
         raise HTTPException(status_code=404, detail="Note not found")
     return crud.update_note(db=db, note=note)
+
+@app.post('/remove_note', response_model=List[schemas.Note])
+def remove_note(user_id: int, topic_id: int, note_id: int, db: Session = Depends(get_database)):
+    db_note = crud.get_note_by_id(db=db, note_id=note_id)
+    if (db_note is None) or (db_note.user_id != user_id) or (db_note.topic_id != topic_id):
+        raise HTTPException(status_code=404, detail="Note not found")
+    return crud.remove_note_by_user(db=db, user_id=user_id, topic_id=topic_id, note_id=note_id)
 
 @app.get('/note', response_model=schemas.Note)
 def get_note_by_id(note_id: int, db: Session = Depends(get_database)):

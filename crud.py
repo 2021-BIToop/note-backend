@@ -50,6 +50,12 @@ def get_topic_by_id_user(db: Session, topic_id: int, user_id: int):
 def get_topics_by_user(db: Session, user_id: int, skip: int = 0, limit: int = 100):
     return db.query(models.Topic).filter(models.Topic.user_id == user_id).offset(skip).limit(limit).all()
 
+def remove_topic_by_user(db: Session, user_id: int, topic_id: int):
+    db_topic = db.query(models.Topic).filter(models.Topic.user_id == user_id, models.Topic.topic_id == topic_id).first()
+    db.delete(db_topic)
+    db.commit()
+    return get_topics_by_user(db, user_id)
+
 def create_note(db: Session, note: schemas.NoteForm):
     modified_time = datetime.now()
     db_note = models.Note(content=note.content, priority=note.priority, modified_time=modified_time, user_id=note.user_id, topic_id=note.topic_id)
@@ -75,3 +81,9 @@ def get_note_by_id(db: Session, note_id: int):
 
 def get_note_by_user_topic(db: Session, user_id: int, topic_id: int, skip: int = 0, limit: int = 100):
     return db.query(models.Note).filter(models.Note.user_id == user_id, models.Note.topic_id == topic_id).offset(skip).limit(limit).all()
+
+def remove_note_by_user(db: Session, user_id: int, topic_id: int, note_id: int):
+    db_note = db.query(models.Note).filter(models.Note.user_id == user_id, models.Note.topic_id == topic_id, models.Note.note_id == note_id).first()
+    db.delete(db_note)
+    db.commit()
+    return get_note_by_user_topic(db, user_id, topic_id)
