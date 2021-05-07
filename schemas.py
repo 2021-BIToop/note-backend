@@ -9,31 +9,31 @@ class UserForm(UserBase):
     password: str
 
 class User(UserBase):
-    uid: int
+    user_id: int
     
     class Config:
         orm_mode = True
 
 class TopicForm(BaseModel):
+    topic_id: Optional[int] = None
     name: str
     rank: int
-    uid: int
+    user_id: int
 
 class Topic(TopicForm):
-    lid: int
     created_time: datetime
 
     class Config:
         orm_mode = True
 
 class NoteForm(BaseModel):
+    note_id: Optional[int] = None
     content: str
     priority: int
-    uid: int
-    lid: int
+    user_id: int
+    topic_id: int
 
 class Note(NoteForm):
-    rid: int
     modified_time: datetime
 
     class Config:
