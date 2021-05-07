@@ -7,7 +7,7 @@ from .database import Base
 class User(Base):
     __tablename__ = "users"
 
-    uid = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, index=True)
     password = Column(String)
 
@@ -17,12 +17,12 @@ class User(Base):
 class Topic(Base):
     __tablename__ = "topics"
 
-    lid = Column(Integer, primary_key=True, index=True)
+    topic_id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
     rank = Column(Integer)
     created_time = Column(DateTime)
     
-    uid = Column(Integer, ForeignKey('users.uid'))
+    user_id = Column(Integer, ForeignKey('users.user_id'))
     topic_owner = relationship('User', back_populates='topics')
 
     notes = relationship('Note', back_populates='kind')
@@ -30,15 +30,15 @@ class Topic(Base):
 class Note(Base):
     __tablename__ = "notes"
 
-    rid = Column(Integer, primary_key=True, index=True)
+    note_id = Column(Integer, primary_key=True, index=True)
     content = Column(String)
     priority = Column(Integer)
     modified_time = Column(DateTime)
     
-    uid = Column(Integer, ForeignKey('users.uid'))
+    user_id = Column(Integer, ForeignKey('users.user_id'))
     note_owner = relationship('User', back_populates='notes')
 
-    lid = Column(Integer, ForeignKey('topics.lid'))
+    topic_id = Column(Integer, ForeignKey('topics.topic_id'))
     kind = relationship('Topic', back_populates='notes')
 
     
